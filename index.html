@@ -1,0 +1,375 @@
+<!doctype html>
+<!--
+  «Они идут» — детский день рождения, демо для портфолио (вымышленные данные)
+  Техники epic-design: pinned scrub timeline (коридор), perspective dolly-in,
+  approaching light sprites, white-flash reveal, flashlight mask reveal (pinned),
+  flicker-on card reveal, lights-out finale, fog/grain depth layers.
+  Ассеты: gen/corridor.webp (первый кадр), gen/kids.webp (последний кадр),
+  frames/f001..fNNN.webp (кадры видео, FRAMES > 0), audio/lullaby.mp3.
+-->
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Приглашение на день рождения Ники</title>
+<meta name="description" content="Нике исполняется 9 лет! Открой приглашение — там всё самое интересное.">
+<meta name="theme-color" content="#050609">
+<!-- превью в мессенджерах — нарочно милое и обычное, интрига раскрывается только на сайте -->
+<meta property="og:title" content="Приглашение на день рождения Ники 🎂">
+<meta property="og:description" content="Нике исполняется 9 лет! Открой приглашение — там всё самое интересное.">
+<meta property="og:image" content="https://bemuzir-maker.github.io/oni-idut/og-cake.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Playfair+Display:wght@700&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#050609; --ink-2:#0b0e16; --fog:#8fa3c4; --bone:#e9e2d0; --mute:#8a8a96;
+  --amber:#ffc56b; --amber-hot:#fff1cf;
+  --serif:"Cormorant Garamond",Georgia,serif; --display:"Playfair Display",Georgia,serif; --sans:"Manrope",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--ink)}
+body{background:var(--ink);color:var(--bone);font-family:var(--sans);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body.locked{overflow:hidden;height:100svh}
+img{display:block}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- depth-5: плёночное зерно поверх всего ---------- */
+.grain{position:fixed;inset:-50%;z-index:90;pointer-events:none;opacity:.09;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 1s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-4%,3%)}50%{transform:translate(3%,-5%)}75%{transform:translate(-2%,-2%)}100%{transform:translate(4%,4%)}}
+
+/* ---------- 0. Вход ---------- */
+.gate{position:fixed;inset:0;z-index:80;display:grid;place-items:center;text-align:center;padding:24px;
+  background:radial-gradient(60% 50% at 50% 38%,#11141d 0,var(--ink) 70%);transition:opacity 1.6s ease}
+.gate.gone{opacity:0;pointer-events:none}
+.bulb{width:14px;height:14px;border-radius:50%;margin:0 auto 34px;background:var(--amber-hot);
+  box-shadow:0 0 18px 6px rgba(255,197,107,.55),0 0 90px 30px rgba(255,197,107,.18);animation:flicker 5s infinite}
+@keyframes flicker{0%,18%,22%,62%,64%,100%{opacity:1}20%,63%{opacity:.15}21%{opacity:.6}}
+.gate p{font-family:var(--serif);font-style:italic;font-size:clamp(20px,5.4vw,30px);color:var(--fog);line-height:1.35}
+.gate button{margin-top:38px;font:600 13px/1 var(--sans);letter-spacing:.28em;text-transform:uppercase;color:var(--bone);
+  background:none;border:1px solid rgba(233,226,208,.35);padding:18px 28px;border-radius:2px;cursor:pointer;transition:.4s}
+.gate button:hover,.gate button:focus-visible{border-color:var(--amber);color:var(--amber);box-shadow:0 0 30px rgba(255,197,107,.25);outline:none}
+
+.sound{position:fixed;right:16px;top:16px;z-index:85;width:42px;height:42px;border-radius:50%;border:1px solid rgba(233,226,208,.25);
+  background:rgba(5,6,9,.5);color:var(--bone);font-size:16px;cursor:pointer;display:none;backdrop-filter:blur(6px)}
+.sound.on{display:block}
+
+/* ---------- 1. Коридор (pinned, 520vh) ---------- */
+.corridor{height:520vh;position:relative}
+.stage{position:sticky;top:0;height:100svh;overflow:hidden;background:var(--ink)}
+.layer{position:absolute;inset:0;pointer-events:none}
+.bg-still,.bg-kids,#frames{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.bg-still{transform-origin:50% 46%;will-change:transform;filter:brightness(.85)}
+.bg-kids{opacity:0}
+#frames{display:none}
+.vignette{background:radial-gradient(75% 65% at 50% 46%,transparent 30%,rgba(5,6,9,.92) 100%)}
+.fog{inset:-20%;opacity:.5;mix-blend-mode:screen;
+  background:radial-gradient(40% 18% at 30% 78%,rgba(143,163,196,.22),transparent 70%),radial-gradient(45% 16% at 72% 84%,rgba(143,163,196,.16),transparent 70%);
+  animation:drift 22s ease-in-out infinite alternate}
+.fog.b{animation-duration:31s;animation-direction:alternate-reverse;opacity:.35}
+@keyframes drift{to{transform:translate3d(8%,-2%,0)}}
+.light{position:absolute;left:0;top:0;width:100px;height:100px;margin:-50px 0 0 -50px;border-radius:50%;
+  background:radial-gradient(circle,var(--amber-hot) 0 7%,rgba(255,214,140,.85) 14%,rgba(255,197,107,.28) 34%,transparent 68%);
+  mix-blend-mode:screen;will-change:transform,opacity}
+.flash{background:#fff7e6;opacity:0}
+.lyric{position:absolute;left:0;right:0;top:20%;text-align:center;padding:0 24px;opacity:0;
+  font-family:var(--serif);font-style:italic;font-size:clamp(30px,8.5vw,64px);color:var(--bone);
+  text-shadow:0 0 24px rgba(143,163,196,.5);filter:blur(6px)}
+.hint{position:absolute;bottom:28px;left:0;right:0;text-align:center;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--mute);animation:breathe 2.6s ease-in-out infinite}
+@keyframes breathe{50%{transform:translateY(6px)}}
+.title{position:absolute;left:0;right:0;bottom:9%;text-align:center;opacity:0}
+.title small{display:block;font:600 11px/1 var(--sans);letter-spacing:.42em;text-transform:uppercase;color:var(--amber);margin-bottom:14px}
+.title h1{font-family:var(--display);font-weight:700;font-size:clamp(56px,17vw,150px);line-height:.9;letter-spacing:.02em;
+  color:var(--bone);text-shadow:0 0 40px rgba(255,197,107,.45),0 4px 30px rgba(0,0,0,.8)}
+
+/* ---------- 2. Фонарик (pinned, 220vh) ---------- */
+.invite{height:220vh;position:relative}
+.invite .stage{display:grid;place-items:center;text-align:center;
+  background:radial-gradient(70% 60% at 50% 50%,#121726 0,var(--ink) 75%)}
+.invite .content{padding:0 24px;max-width:640px}
+.kicker{font:600 11px/1 var(--sans);letter-spacing:.42em;text-transform:uppercase;color:var(--fog)}
+.greet{font-family:var(--display);font-weight:700;font-size:clamp(30px,8vw,56px);line-height:1.1;color:var(--amber);margin-bottom:10px}
+.invite h2{font-family:var(--display);font-weight:700;font-size:clamp(38px,10vw,78px);line-height:1;margin:34px 0 10px}
+.invite .sub{font-family:var(--serif);font-style:italic;font-size:clamp(20px,5vw,28px);color:var(--fog)}
+.when{margin-top:40px;display:flex;justify-content:center;gap:clamp(18px,6vw,48px);align-items:baseline;flex-wrap:wrap}
+.when b{display:block;font-family:var(--serif);font-size:clamp(44px,12vw,86px);line-height:1;color:var(--amber)}
+.when span{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--mute)}
+.dark{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(circle var(--r,22vmin) at var(--x,50%) var(--y,50%),transparent 0,rgba(5,6,9,.55) 55%,rgba(5,6,9,.985) 100%)}
+
+/* ---------- 3. Правила ---------- */
+.rules{padding:18vh 20px 14vh;max-width:980px;margin:0 auto;text-align:center}
+.rules h2{font-family:var(--display);font-weight:700;font-size:clamp(34px,8.5vw,64px);line-height:1.05}
+.rules h2 em{color:var(--amber);font-style:italic}
+.cards{margin-top:56px;display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{position:relative;padding:36px 22px 30px;border:1px solid rgba(233,226,208,.08);border-radius:4px;
+  background:radial-gradient(120% 90% at 50% 0,rgba(255,197,107,.07),transparent 60%),var(--ink-2);opacity:.08;transition:opacity .3s}
+.card.lit{animation:on 1.4s forwards}
+.card:nth-child(2).lit{animation-delay:.35s}.card:nth-child(3).lit{animation-delay:.7s}
+@keyframes on{0%{opacity:.08}12%{opacity:.9}18%{opacity:.15}30%{opacity:1}36%{opacity:.4}50%,100%{opacity:1}}
+.card svg{width:64px;height:64px;stroke:var(--amber);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;
+  filter:drop-shadow(0 0 10px rgba(255,197,107,.5))}
+.card h3{margin:20px 0 8px;font-size:20px;font-weight:800}
+.card p{color:var(--mute);font-size:15px;line-height:1.5}
+.must{display:inline-block;margin-top:14px;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink);background:var(--amber);padding:6px 10px;border-radius:2px;font-weight:800}
+
+/* ---------- 4. Место ---------- */
+.place{min-height:100svh;padding:14vh 20px 12vh;text-align:center;display:grid;place-items:center;
+  background:radial-gradient(60% 40% at 50% 100%,rgba(255,197,107,.07),transparent 70%)}
+.place h2{font-family:var(--display);font-weight:700;font-size:clamp(34px,8.5vw,60px);line-height:1.05}
+.addr{margin-top:22px;font-size:clamp(18px,4.6vw,24px);font-weight:600}
+.door{margin-top:10px;color:var(--mute);font-size:15px}
+.door b{color:var(--bone)}
+.go{display:inline-block;margin-top:34px;padding:18px 28px;font:800 13px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink);background:var(--amber);text-decoration:none;border-radius:2px;box-shadow:0 0 40px rgba(255,197,107,.3);transition:.3s}
+.go:hover,.go:focus-visible{background:var(--amber-hot);outline:none;box-shadow:0 0 60px rgba(255,197,107,.5)}
+.dots{display:flex;gap:22px;justify-content:center;margin:12vh 0 26px}
+.dots i{width:12px;height:12px;border-radius:50%;background:var(--amber-hot);box-shadow:0 0 16px 5px rgba(255,197,107,.55)}
+.place.out .dots i{animation:off .5s forwards}
+.place.out .dots i:nth-child(2){animation-delay:.7s}.place.out .dots i:nth-child(3){animation-delay:1.4s}
+.place.out .dots i:nth-child(4){animation-delay:2.1s}.place.out .dots i:nth-child(5){animation-delay:2.8s}
+@keyframes off{30%{opacity:1}45%{opacity:.2}60%{opacity:.8}100%{opacity:.04;box-shadow:none}}
+.bye{font-family:var(--serif);font-style:italic;font-size:clamp(24px,6vw,36px);color:var(--fog);opacity:0;transition:opacity 2s 3.4s}
+.place.out .bye{opacity:1}
+.sign{display:block;margin-top:10px;font:600 12px/1 var(--sans);letter-spacing:.4em;text-transform:uppercase;color:var(--amber)}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .card{opacity:1}
+}
+</style>
+</head>
+<body class="locked">
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- 0. Вход: нужен жест пользователя, чтобы браузер разрешил звук -->
+<div class="gate" id="gate">
+  <div>
+    <div class="bulb" aria-hidden="true"></div>
+    <p><span id="gateHead">Надень наушники.</span><br><span data-pl="Выключите свет.">Выключи свет.</span></p>
+    <button id="enter" type="button">Войти в темноту</button>
+  </div>
+</div>
+<button class="sound" id="sound" type="button" aria-label="Выключить музыку">♪</button>
+<audio id="music" src="audio/lullaby.mp3" loop preload="auto"></audio>
+
+<main>
+<!-- 1. Коридор: огоньки приближаются, в конце — дети с фонариками -->
+<section class="corridor" id="corridor" aria-label="Нике 9 лет">
+  <div class="stage">
+    <div class="layer depth-0" data-depth="0" aria-hidden="true">
+      <img class="bg-still" id="still" src="gen/corridor.webp" alt="">
+      <canvas id="frames"></canvas>
+      <img class="bg-kids" id="kids" src="gen/kids.webp" alt="">
+    </div>
+    <div class="layer depth-1" data-depth="1" aria-hidden="true"><div class="layer fog"></div><div class="layer fog b"></div></div>
+    <div class="layer depth-2 vignette" data-depth="2" aria-hidden="true"></div>
+    <div class="layer depth-3" data-depth="3" aria-hidden="true" id="lights"></div>
+    <div class="layer depth-4" data-depth="4">
+      <p class="lyric">Тили-тили-бом…</p>
+      <p class="lyric">Закрой глаза скорее…</p>
+      <p class="lyric">Кто-то ходит за окном…</p>
+      <div class="title" id="title"><small>Секретная миссия</small><h1>Нике 9 лет</h1></div>
+      <p class="hint" id="hint" aria-hidden="true">листай вниз</p>
+    </div>
+    <div class="layer depth-5 flash" data-depth="5" id="flash" aria-hidden="true"></div>
+  </div>
+</section>
+
+<!-- 2. Приглашение в луче фонарика -->
+<section class="invite" id="invite">
+  <div class="stage">
+    <div class="content depth-4" data-depth="4">
+      <p class="greet" id="greet">Привет!</p>
+      <p class="sub" data-pl="Приглашаю вас на свой день рождения">Приглашаю тебя на&nbsp;свой день рождения</p>
+      <h2>Квест «Прятки в&nbsp;темноте»</h2>
+      <p class="sub">Будем искать тайники и прятаться там, где темнее всего</p>
+      <div class="when">
+        <div><b>14 ноября</b><span>суббота</span></div>
+        <div><b>16:00</b><span data-pl="не опаздывайте">не опаздывай</span></div>
+      </div>
+    </div>
+    <div class="dark depth-5" data-depth="5" id="dark" aria-hidden="true"></div>
+  </div>
+</section>
+
+<!-- 3. Дресс-код -->
+<section class="rules" id="rules">
+  <h2>Без этого в&nbsp;темноту <em>не&nbsp;пустят</em></h2>
+  <div class="cards">
+    <div class="card">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 42c0-6 2-14 6-20l10 4c3 1 6 0 8-2l4-4c6 4 14 8 22 10 4 1 6 4 6 8v4H6z"/><path d="M6 48h52M22 30l4-4M28 34l4-4"/></svg>
+      <h3>Закрытая обувь</h3>
+      <p>Сменная, удобная, с&nbsp;закрытым носом. Шлёпки и&nbsp;сандалии останутся у&nbsp;входа.</p>
+      <span class="must">Обязательно</span>
+    </div>
+    <div class="card">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M18 6h28l4 52H36l-4-30-4 30H14z"/><path d="M18 12h28"/></svg>
+      <h3>Штаны</h3>
+      <p>Не платья и&nbsp;не&nbsp;юбки&nbsp;— придётся ползать, прятаться и&nbsp;пробираться в&nbsp;темноте.</p>
+      <span class="must">Обязательно</span>
+    </div>
+    <div class="card">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M22 8l-12 8-4 16 8 2v24h36V34l8-2-4-16-12-8c-2 5-6 7-10 7s-8-2-10-7z"/></svg>
+      <h3>Удобная одежда</h3>
+      <p>Такая, в&nbsp;которой не&nbsp;жалко и&nbsp;не&nbsp;жарко бегать целый вечер.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4. Место встречи и финал: огоньки гаснут -->
+<section class="place" id="place">
+  <div>
+    <p class="kicker">Место встречи</p>
+    <h2>Квест-клуб «Сумрак»</h2>
+    <p class="addr">ул. Образцовая, 10</p>
+    <p class="door">На двери — табличка <b>«Прятки в&nbsp;темноте»</b></p>
+    <a class="go" href="https://yandex.ru/maps/?text=%D1%83%D0%BB.%20%D0%9E%D0%B1%D1%80%D0%B0%D0%B7%D1%86%D0%BE%D0%B2%D0%B0%D1%8F%2C%2010" target="_blank" rel="noopener">Проложить маршрут</a>
+    <div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <p class="bye"><span data-pl="Жду вас. Если осмелитесь.">Жду тебя. Если осмелишься.</span><span class="sign">— Ника</span></p>
+  </div>
+</section>
+</main>
+
+<script>
+// Кол-во кадров видео в frames/f001.webp… (0 — запасной режим «картинка + CSS-огоньки»)
+const FRAMES = 122;
+
+// Гости: ?to=<ключ> → обращение. f — девочка, m — мальчик.
+const GUESTS = {
+  sonya:  ['Соня', 'f'],
+  misha:  ['Миша', 'm'],
+  polina: ['Полина', 'f'],
+  artem:  ['Артём', 'm'],
+  zlatamark:['Злата и Марк', 'p'], // p — приглашение на двоих, обращение на «вы»
+};
+const guest = GUESTS[new URLSearchParams(location.search).get('to')];
+if (guest) {
+  const [name, g] = guest;
+  document.getElementById('greet').textContent = `${{ f: 'Дорогая', m: 'Дорогой', p: 'Дорогие' }[g]} ${name}!`;
+  document.getElementById('gateHead').textContent =`${name}, ${g === 'p' ? 'наденьте' : 'надень'} наушники.`;
+  if (g === 'p') document.querySelectorAll('[data-pl]').forEach(el => el.textContent = el.dataset.pl);
+  document.title = `${name}, ${g === 'p' ? 'вас' : 'тебя'} приглашает Ника`;
+}
+
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const band = (p, a, b) => clamp((p - a) / (b - a));           // 0→1 внутри [a,b]
+const bell = (p, a, b) => Math.sin(Math.PI * band(p, a, b));  // 0→1→0
+const progress = el => { const r = el.getBoundingClientRect(); return clamp(-r.top / (r.height - innerHeight)); };
+
+/* ---------- вход + музыка ---------- */
+const music = document.getElementById('music'), soundBtn = document.getElementById('sound');
+music.addEventListener('error', () => soundBtn.classList.remove('on'));
+document.getElementById('enter').addEventListener('click', () => {
+  document.getElementById('gate').classList.add('gone');
+  document.body.classList.remove('locked');
+  music.volume = 0;
+  music.play().then(() => {
+    soundBtn.classList.add('on');
+    const t0 = performance.now();
+    (function fade(t) { music.volume = clamp((t - t0) / 4000) * 0.8; if (t - t0 < 4000) requestAnimationFrame(fade); })(t0);
+  }).catch(() => {});
+});
+soundBtn.addEventListener('click', () => {
+  music.muted = !music.muted;
+  soundBtn.textContent = music.muted ? '×' : '♪';
+  soundBtn.setAttribute('aria-label', music.muted ? 'Включить музыку' : 'Выключить музыку');
+});
+
+/* ---------- 1. коридор ---------- */
+const corridor = document.getElementById('corridor'), still = document.getElementById('still'),
+      kids = document.getElementById('kids'), flash = document.getElementById('flash'),
+      title = document.getElementById('title'), hint = document.getElementById('hint'),
+      lyrics = [...document.querySelectorAll('.lyric')], lightsBox = document.getElementById('lights');
+
+// финальные позиции огоньков (доли экрана) — примерно где окажутся фонарики на касках
+const TARGETS = [[.19,.37],[.34,.38],[.5,.39],[.66,.38],[.81,.38]];
+const VP = [.5,.56]; // где стоят огоньки на gen/corridor.webp
+const lights = TARGETS.map(() => lightsBox.appendChild(Object.assign(document.createElement('div'), { className: 'light' })));
+
+// видео-кадры (если сгенерированы)
+const canvas = document.getElementById('frames'), ctx = canvas.getContext('2d'), imgs = [];
+if (FRAMES) {
+  canvas.style.display = 'block'; still.style.display = 'none'; lightsBox.style.display = 'none';
+  for (let i = 1; i <= FRAMES; i++) { const im = new Image(); im.src = `frames/f${String(i).padStart(3, '0')}.webp`; imgs.push(im); }
+}
+let lastFrame = -1;
+addEventListener('resize', () => lastFrame = -1);
+function drawFrame(i) {
+  const im = imgs[i]; if (!im || !im.complete || !im.naturalWidth || i === lastFrame) return;
+  const w = canvas.width = innerWidth * devicePixelRatio, h = canvas.height = innerHeight * devicePixelRatio;
+  const s = Math.max(w / im.naturalWidth, h / im.naturalHeight);
+  ctx.drawImage(im, (w - im.naturalWidth * s) / 2, (h - im.naturalHeight * s) / 2, im.naturalWidth * s, im.naturalHeight * s);
+  lastFrame = i;
+}
+
+function corridorTick(p, t) {
+  hint.style.opacity = 1 - band(p, 0, .05);
+  [[.06, .28], [.28, .5], [.5, .72]].forEach(([a, b], i) => {
+    const o = bell(p, a, b);
+    lyrics[i].style.opacity = o;
+    lyrics[i].style.filter = `blur(${(1 - o) * 8}px)`;
+    lyrics[i].style.transform = `translateY(${(band(p, a, b) - .5) * -30}px)`;
+  });
+
+  const walk = band(p, 0, .84);
+  // ^3.5: огоньки долго остаются точками, дети проступают только перед вспышкой
+  if (FRAMES) drawFrame(Math.round(Math.pow(walk, 3.5) * (FRAMES - 1)));
+  else {
+    still.style.transform = `scale(${1 + walk * .35})`;
+    const k = Math.pow(walk, 2.3); // долго далеко, потом резко близко
+    lights.forEach((el, i) => {
+      const [tx, ty] = TARGETS[i];
+      const bob = Math.sin(t / 260 + i * 1.7) * (2 + k * 18);     // покачивание шагов
+      const x = (VP[0] + (tx - VP[0]) * k) * innerWidth + Math.sin(t / 900 + i) * 3;
+      const y = (VP[1] + (ty - VP[1]) * k) * innerHeight + bob;
+      const s = .12 + k * 3.2;
+      el.style.transform = `translate3d(${x}px,${y}px,0) scale(${s})`;
+      el.style.opacity = (.55 + .45 * Math.abs(Math.sin(t / 140 + i * 3))) * (1 - band(p, .84, .9)); // дрожащий свет
+    });
+  }
+
+  flash.style.opacity = bell(p, .82, .92);
+  kids.style.opacity = p > .87 ? 1 : 0;
+  const ti = band(p, .9, 1);
+  title.style.opacity = ti;
+  title.style.transform = `scale(${1.25 - ti * .25})`;
+}
+
+/* ---------- 2. фонарик ---------- */
+const invite = document.getElementById('invite'), dark = document.getElementById('dark');
+let pointer = null, pointerT = 0;
+invite.addEventListener('pointermove', e => { pointer = [e.clientX, e.clientY]; pointerT = performance.now(); });
+function inviteTick(p, t) {
+  let x, y;
+  if (pointer && t - pointerT < 1800) [x, y] = pointer;
+  else { x = innerWidth * (.5 + .32 * Math.sin(t / 1300)); y = innerHeight * (.5 + .22 * Math.sin(t / 900)); } // сам «обыскивает» экран
+  dark.style.setProperty('--x', x + 'px');
+  dark.style.setProperty('--y', y + 'px');
+  dark.style.setProperty('--r', (22 + Math.pow(band(p, .35, .95), 2) * 140) + 'vmin'); // к концу свет заливает всё
+}
+
+/* ---------- 3–4. появление при входе в экран ---------- */
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  e.target.classList.add(e.target.classList.contains('card') ? 'lit' : 'out');
+  io.unobserve(e.target);
+}), { threshold: .45 });
+document.querySelectorAll('.card, .place').forEach(el => io.observe(el));
+
+/* ---------- цикл ---------- */
+if (reduce) { corridorTick(1, 0); dark.style.setProperty('--r', '200vmin'); }
+else (function loop(t) {
+  corridorTick(progress(corridor), t);
+  inviteTick(progress(invite), t);
+  requestAnimationFrame(loop);
+})(0);
+</script>
+</body>
+</html>
